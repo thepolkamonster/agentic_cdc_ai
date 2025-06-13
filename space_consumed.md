@@ -1,0 +1,3 @@
+- cuda toolkit in: C:\Program Files\NVIDIA GPU Computing Toolkit
+- models through huggingface (find these through treesizefree)
+- installed PyTorch in python version 3.11.0
