@@ -99,7 +99,7 @@ def evaluate_insight(message, df, model ,tokenizer ,insight, max_tokens: int = 5
         tokenize=False,
         add_generation_prompt=True
     )
-
+    # print(chat_prompt)
     inputs = tokenizer(chat_prompt, return_tensors="pt").to("cuda")
     outputs = model.generate(
         **inputs,
@@ -107,7 +107,11 @@ def evaluate_insight(message, df, model ,tokenizer ,insight, max_tokens: int = 5
         eos_token_id=tokenizer.eos_token_id,
         pad_token_id=tokenizer.eos_token_id
     )
+    # print("==================outputs==================")
+    # print(outputs)
     decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    print("==================decoded==================")
+    # print(decoded)
     result = decoded[len(chat_prompt):].strip()
 
     print(result)

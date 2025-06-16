@@ -23,6 +23,7 @@ def get_prompt_message(role: str, df = None, insight = None, path="agentic_metad
     ]
     return message
 
+
 def get_clean_csv(cav_path):
     df = pd.read_csv("agentic_metadata\metadata.csv").head(5)
     df.dropna(axis = 1, inplace = True)
@@ -30,15 +31,28 @@ def get_clean_csv(cav_path):
 
     return df
 
-def load_model_and_tokenizer(MODEL_ID):
+def load_generator_model_and_tokenizer(MODEL_ID):
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-    print(tokenizer)
+    # print(tokenizer)
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
         torch_dtype="auto",
         trust_remote_code=True
     ).to("cuda")
-    print(model)
+    #print(model)
+
+    return model, tokenizer
+
+def load_evaluator_model_and_tokenizer(MODEL_ID):
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    # print(tokenizer)
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_ID,
+        torch_dtype="auto",
+        trust_remote_code=True,
+        load_in_4bit=True
+    ).to("cuda")
+    # print(model)
 
     return model, tokenizer
 
