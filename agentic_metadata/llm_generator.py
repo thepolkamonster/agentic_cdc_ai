@@ -88,7 +88,7 @@ def generate_insight(message, df, model ,tokenizer ,max_tokens: int = 512):
         pad_token_id=tokenizer.eos_token_id
     )
     decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    result = decoded[len(chat_prompt):].strip()
+    result = decoded.strip()
 
     print(result)
     return result;
@@ -110,12 +110,15 @@ def evaluate_insight(message, df, model ,tokenizer ,insight, max_tokens: int = 5
     # print("==================outputs==================")
     # print(outputs)
     decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
     print("==================decoded==================")
     # print(decoded)
-    result = decoded[len(chat_prompt):].strip()
+    result = decoded.strip()
+    rating = int(decoded.split("\nSuggestion: ")[1][-1])
+    suggestion = decoded.split("\nSuggestion: ")[2]
 
-    print(result)
-    return result;
+    print(f"\nRating: {rating}\nSuggestion: {suggestion}\n")
+    return rating, suggestion;
 
 
 
