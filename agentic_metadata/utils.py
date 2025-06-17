@@ -22,7 +22,7 @@ def end_git_flow(repo, branch_name, commit_message="Auto commit from agentic sys
     repo.index.commit(commit_message)
 
     # Checkout main and merge
-    repo.git.checkout("main")
+    repo.git.checkout("master")
     repo.git.merge(branch_name)
 
     # Optionally delete the branch
