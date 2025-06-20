@@ -2,31 +2,79 @@ import json
 import pandas as pd
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
-
-from git import Repo
+import os
+from git import Repo, GitCommandError
 from datetime import datetime
 
-from git import Repo
-from datetime import datetime
+LOG_FILE = "agentic_git_flow_log.txt"
+DEFAULT_REMOTE = "origin"
+DEFAULT_MAIN_BRANCH = "master"
 
-def start_git_flow(repo_path=".", branch_prefix="insight"):
+# def start_git_flow(repo_path=".", branch_prefix="insight"):
+#     repo = Repo(repo_path, search_parent_directories=True)
+#     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+#     branch_name = f"{branch_prefix}-{timestamp}"
+#     repo.git.checkout('-b', branch_name)
+#     return repo, branch_name
+
+
+# def end_git_flow(repo, branch_name, commit_message="Auto commit from agentic system"):
+#     repo.git.add(A=True)
+#     repo.index.commit(commit_message)
+
+#     # Checkout main and merge
+#     repo.git.checkout("master")
+#     repo.git.merge(branch_name)
+
+#     # Optionally delete the branch
+#     repo.git.branch('-d', branch_name)
+
+
+def start_git_flow(repo_path=".", branch_prefix="insight", position="Data Scientist", initial_prompt="N/A"):
     repo = Repo(repo_path, search_parent_directories=True)
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     branch_name = f"{branch_prefix}-{timestamp}"
+    
+    # Create and checkout new branch
     repo.git.checkout('-b', branch_name)
+
+    # Push branch to remote
+    try:
+        repo.git.push('--set-upstream', DEFAULT_REMOTE, branch_name)
+    except GitCommandError as e:
+        print(f"[WARN] Could not push to remote: {e}")
+
+    # Log the session start
+    with open(LOG_FILE, "a") as f:
+        f.write(f"\n---\n[{timestamp}] Position: {position}\nInitial Prompt: {initial_prompt}\nBranch: {branch_name}\n")
+
     return repo, branch_name
 
-
 def end_git_flow(repo, branch_name, commit_message="Auto commit from agentic system"):
+    # Stage and commit all changes
     repo.git.add(A=True)
     repo.index.commit(commit_message)
 
-    # Checkout main and merge
-    repo.git.checkout("master")
-    repo.git.merge(branch_name)
+    # Push commit
+    try:
+        repo.git.push()
+    except GitCommandError as e:
+        print(f"[WARN] Could not push commit: {e}")
 
-    # Optionally delete the branch
+    # Merge into main and push
+    repo.git.checkout(DEFAULT_MAIN_BRANCH)
+    repo.git.merge(branch_name)
+    try:
+        repo.git.push()
+    except GitCommandError as e:
+        print(f"[WARN] Could not push {DEFAULT_MAIN_BRANCH}: {e}")
+
+    # Delete local and remote branch
     repo.git.branch('-d', branch_name)
+    try:
+        repo.git.push(DEFAULT_REMOTE, '--delete', branch_name)
+    except GitCommandError:
+        pass  # remote branch deletion is optional
 
 
 def get_prompt_message(role: str, df = None, insight = None,suggestion=None,  path="agentic_metadata\prompts\prompts.json"):
