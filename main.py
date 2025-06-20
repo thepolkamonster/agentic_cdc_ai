@@ -1,10 +1,11 @@
 from agentic_metadata.utils import get_prompt_message, get_clean_csv, load_generator_model_and_tokenizer, load_evaluator_model_and_tokenizer, start_git_flow, end_git_flow
 from agentic_metadata.llm_generator import generate_insight, evaluate_insight
 
-repo, branch = start_git_flow()
+df = get_clean_csv("agentic_metadata\metadata.csv")
+role = "data_scientist"
+generation_message = get_prompt_message(role, df)
 
-# df = get_clean_csv("agentic_metadata\metadata.csv")
-# generation_message = get_prompt_message("data_scientist", df)
+repo, branch = start_git_flow(position = role, initial_prompt = generation_message)
 
 # suggestion = "something"
 

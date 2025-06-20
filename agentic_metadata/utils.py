@@ -30,7 +30,7 @@ DEFAULT_MAIN_BRANCH = "master"
 #     repo.git.branch('-d', branch_name)
 
 
-def start_git_flow(repo_path=".", branch_prefix="insight", position="Data Scientist", initial_prompt="N/A"):
+def start_git_flow(repo_path=".", branch_prefix="query", position="Data Scientist", initial_prompt="N/A"):
     repo = Repo(repo_path, search_parent_directories=True)
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     branch_name = f"{branch_prefix}-{timestamp}"
@@ -52,6 +52,7 @@ def start_git_flow(repo_path=".", branch_prefix="insight", position="Data Scient
 
 def end_git_flow(repo, branch_name, commit_message="Auto commit from agentic system"):
     # Stage and commit all changes
+    
     repo.git.add(A=True)
     repo.index.commit(commit_message)
 
