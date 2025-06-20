@@ -6,11 +6,11 @@ role = "data_scientist"
 generation_message = get_prompt_message(role, df)
 
 git_commit_message = generation_message[0]
-# print(git_commit_message)
+print(git_commit_message)
 
 
 
-suggestion = "something"
+suggestion = "NA"
 
 GENERATOR_MODEL_ID = "openchat/openchat-3.5-1210"
 EVALUATOR_MODEL_ID = "openchat/openchat-3.5-1210"
@@ -26,8 +26,9 @@ rating, suggestion = evaluate_insight(evaluation_message, df, evaluator, evaluat
 
 counter = 2
 
-while(rating < 9 or counter < 2):
-    git_commit_message = git_commit_message + f"\nSuggestion: {suggestion}"
+while(rating < 9 and counter > 0):
+    content = generation_message[0]["content"]
+    git_commit_message = content + f"\nSuggestion: {suggestion}"
     generation_message = get_prompt_message("data_scientist", df, insight=insight, suggestion=suggestion)
     insight = generate_insight(generation_message, df, generator, generator_tokenizer)
     evaluation_message = get_prompt_message("data_scientist_evaluator", df=df, insight=insight)
