@@ -5,9 +5,10 @@ df = get_clean_csv("agentic_metadata\metadata.csv")
 role = "data_scientist"
 generation_message = get_prompt_message(role, df)
 
-git_commit_message = generation_message[:10]
+git_commit_message = generation_message[0]
+# print(git_commit_message)
 
-repo, branch = start_git_flow(position = role, initial_prompt = git_commit_message)
+
 
 # suggestion = "something"
 
@@ -26,10 +27,13 @@ repo, branch = start_git_flow(position = role, initial_prompt = git_commit_messa
 # counter = 2
 
 # while(rating < 9 or counter < 2):
+#     git_commit_message = git_commit_message + f"\nSuggestion: {suggestion}"
 #     generation_message = get_prompt_message("data_scientist", df, insight=insight, suggestion=suggestion)
 #     insight = generate_insight(generation_message, df, generator, generator_tokenizer)
 #     evaluation_message = get_prompt_message("data_scientist_evaluator", df=df, insight=insight)
 #     rating, suggestion = evaluate_insight(evaluation_message, df, evaluator, evaluator_tokenizer, insight)
 #     counter -= 1
+
+repo, branch = start_git_flow(position = role, initial_prompt = git_commit_message)
 
 end_git_flow(repo, branch)
