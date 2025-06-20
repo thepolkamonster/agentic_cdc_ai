@@ -7,7 +7,7 @@ generation_message = get_prompt_message(role, df)
 
 git_commit_message = generation_message[:10]
 
-repo, branch = start_git_flow(position = role, initial_prompt = generation_message)
+repo, branch = start_git_flow(position = role, initial_prompt = git_commit_message)
 
 # suggestion = "something"
 
