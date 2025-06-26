@@ -2,8 +2,9 @@ from agentic_metadata.utils import get_prompt_message, get_clean_csv, load_gener
 from agentic_metadata.llm_generator import generate_insight, evaluate_insight
 
 df = get_clean_csv("agentic_metadata\metadata.csv")
-role = "data_scientist"
-generation_message = get_prompt_message(role, df)
+prompt_role = "data_scientist"
+evaluator_role = "data_scientist_evaluator"
+generation_message = get_prompt_message(prompt_role, df)
 
 git_commit_message = generation_message[0]
 print(git_commit_message)
@@ -19,7 +20,7 @@ insight = generate_insight(generation_message, df, generator, generator_tokenize
 
 print("================Evaluation=================")
 evaluator, evaluator_tokenizer = load_evaluator_model_and_tokenizer(EVALUATOR_MODEL_ID)
-evaluation_message = get_prompt_message("data_scientist_evaluator", df=df, insight=insight)
+evaluation_message = get_prompt_message(evaluator_role, df=df, insight=insight)
 print("==========Evaluation message===========")
 # print(evaluation_message)
 rating, suggestion = evaluate_insight(evaluation_message, df, evaluator, evaluator_tokenizer, insight)
