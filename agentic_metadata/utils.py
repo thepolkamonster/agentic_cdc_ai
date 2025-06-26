@@ -30,12 +30,13 @@ DEFAULT_MAIN_BRANCH = "master"
 #     repo.git.branch('-d', branch_name)
 
 
-def start_git_flow(repo_path=".", branch_prefix="query", position="Data Scientist", initial_prompt="N/A"):
+def start_git_flow(repo_path=".", branch_prefix="query", base_branch="change_commit_branch", position="Data Scientist", initial_prompt="N/A"):
     repo = Repo(repo_path, search_parent_directories=True)
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     branch_name = f"{branch_prefix}-{timestamp}"
     
     # Create and checkout new branch
+    repo.git.checkout(base_branch)
     repo.git.checkout('-b', branch_name)
 
     # Push branch to remote
@@ -46,11 +47,11 @@ def start_git_flow(repo_path=".", branch_prefix="query", position="Data Scientis
 
     # Log the session start
     with open(LOG_FILE, "a") as f:
-        f.write(f"\n---\n[{timestamp}] Position: {position}\nInitial Prompt: {initial_prompt}\nBranch: {branch_name}\n")
+        f.write(f"\n---\n[{timestamp}] Position: {position}\nInitial Prompt: {initial_prompt}\nBranch: {branch_name}\n from {base_branch}")
 
-    return repo, branch_name
+    return repo, branch_name, base_branch
 
-def end_git_flow(repo, branch_name, commit_message="Auto commit from agentic system"):
+def end_git_flow(repo, branch_name, base_branch="change_commit_branch", commit_message="Auto commit from agentic system"):
     # Stage and commit all changes
     
     repo.git.add(A=True)
@@ -63,7 +64,7 @@ def end_git_flow(repo, branch_name, commit_message="Auto commit from agentic sys
         print(f"[WARN] Could not push commit: {e}")
 
     # Merge into main and push
-    repo.git.checkout(DEFAULT_MAIN_BRANCH)
+    repo.git.checkout(base_branch)
     repo.git.merge(branch_name)
     try:
         repo.git.push()
